@@ -1,4 +1,6 @@
-package ru.example.discount.service;
+package ru.example.discount.service.impl;
+
+import ru.example.discount.service.DiscountService;
 
 import java.math.BigDecimal;
 
