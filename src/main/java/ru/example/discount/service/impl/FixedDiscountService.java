@@ -59,6 +59,6 @@ public class FixedDiscountService implements DiscountService {
     }
 
     private BigDecimal calculateSingleDiscount(BigDecimal price, Discount discount) {
-        return price.multiply(BigDecimal.valueOf(discount.getMinValue() / 100.0));
+        return price.subtract(price.multiply(BigDecimal.valueOf(discount.getMinValue() / 100.0)));
     }
 }
