@@ -5,9 +5,9 @@ import ru.example.discount.service.DiscountService;
 import java.math.BigDecimal;
 
 public class VariableDiscountService implements DiscountService {
+
     @Override
-    public BigDecimal calculateDiscount(BigDecimal price) {
-        // TODO
-        return null;
+    public BigDecimal calculateDiscount(BigDecimal price, long productCategoryId, long clientCategoryId) {
+        return null;  // TODO
     }
 }
