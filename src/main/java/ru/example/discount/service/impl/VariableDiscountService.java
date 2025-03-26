@@ -32,7 +32,7 @@ public class VariableDiscountService implements DiscountService {
         if (!discounts.isEmpty()) {
             return isDiscountAggregate ? calculateAggregatedDiscount(price, discounts) : calculateSingleDiscount(price, discounts.get(0));
         }
-        return null;
+        return price;
     }
 
     private List<Discount> getDiscounts(long productCategoryId, long clientCategoryId) {
