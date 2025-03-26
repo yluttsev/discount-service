@@ -31,3 +31,5 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+tasks.bootJar.archiveFileName = "discount-service.jar"
