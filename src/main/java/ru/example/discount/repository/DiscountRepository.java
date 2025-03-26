@@ -9,8 +9,21 @@ import org.springframework.data.repository.query.Param;
 import ru.example.discount.entity.Discount;
 import ru.example.discount.entity.enums.DiscountType;
 
+/**
+ * Репозиторий для получения скидок
+ */
 public interface DiscountRepository extends ListCrudRepository<Discount, Long> {
 
+    /**
+     * Получение списка скидок для данных категорий клиента и продукта.<br>
+     * Сортирует список скидок от более специфичной скидки к более общей.
+     *
+     * @param clientCategoryId  ID категории клиента
+     * @param productCategoryId ID категории продукта
+     * @param discountType      тип скидки {@link DiscountType}
+     * @param pageable          объект {@link Pageable}
+     * @return {@link Page} со скидками
+     */
     @Query("from Discount d " +
             "where (d.productCategory.id = :product_category_id or d.productCategory is null) " +
             "and (d.clientCategory.id = :client_category_id or d.clientCategory is null) " +

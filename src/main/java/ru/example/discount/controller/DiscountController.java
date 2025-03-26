@@ -14,6 +14,9 @@ import ru.example.discount.service.DiscountService;
 
 import java.math.BigDecimal;
 
+/**
+ * Контроллер для расчета скидок
+ */
 @RestController
 @RequestMapping("/discount")
 @RequiredArgsConstructor
@@ -22,6 +25,14 @@ public class DiscountController {
     private final DiscountService fixedDiscountService;
     private final DiscountService variableDiscountService;
 
+    /**
+     * Расчет фиксированной скидки
+     *
+     * @param price             стоимость продукта
+     * @param productCategoryId ID категории продукта
+     * @param clientCategoryId  ID категории клиента
+     * @return Стоимость с учетом скидок
+     */
     @GetMapping("/fixed")
     public BigDecimal calculateFixedDiscount(@RequestParam("price") BigDecimal price,
                                              @RequestParam("product_category") long productCategoryId,
@@ -29,6 +40,14 @@ public class DiscountController {
         return fixedDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
+    /**
+     * Расчет переменной скидки
+     *
+     * @param price             стоимость продукта
+     * @param productCategoryId ID категории продукта
+     * @param clientCategoryId  ID категории клиента
+     * @return Стоимость с учетом скидок
+     */
     @GetMapping("/variable")
     public BigDecimal calculateVariableDiscount(@RequestParam("price") BigDecimal price,
                                                 @RequestParam("product_category") long productCategoryId,
@@ -36,6 +55,12 @@ public class DiscountController {
         return variableDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
+    /**
+     * Обработчик исключения {@link ConstraintViolationException}
+     *
+     * @param e объект исключения
+     * @return {@link ProblemDetail} с сообщением об ошибке
+     */
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail validationException(ConstraintViolationException e) {
         return ProblemDetail.forStatusAndDetail(
