@@ -2,6 +2,10 @@ package ru.example.discount.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -27,6 +31,22 @@ public class DiscountController {
     private final DiscountService variableDiscountService;
 
     @Operation(summary = "Рассчитать фиксированную скидку", description = "Фиксированная скидка")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешный расчет для фиксированной скидки",
+                    content = @Content(schema = @Schema(implementation = BigDecimal.class, example = "450.50"))
+            ),
+            @ApiResponse(
+                    responseCode = "400", description = "Неверное значение цены: отрицательное или null"
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "Правила для вычисления новой цены по фиксированной скидке не найдены"
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Внутрення ошибка сервера"
+            )
+    })
     @GetMapping("/fixed")
     public BigDecimal calculateFixedDiscount(
             @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
@@ -36,6 +56,22 @@ public class DiscountController {
     }
 
     @Operation(summary = "Рассчитать случайную скидку", description = "Случайная скидка")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешный расчет для случайной скидки",
+                    content = @Content(schema = @Schema(implementation = BigDecimal.class, example = "350.50"))
+            ),
+            @ApiResponse(
+                    responseCode = "400", description = "Неверное значение цены: отрицательное или null"
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "Правила для вычисления новой цены по случайной скидке не найдены"
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Внутрення ошибка сервера"
+            )
+    })
     @GetMapping("/variable")
     public BigDecimal calculateVariableDiscount(
             @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
