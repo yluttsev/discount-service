@@ -3,6 +3,7 @@ package ru.example.discount.controller;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,6 +18,7 @@ import java.math.BigDecimal;
 /**
  * Контроллер для расчета скидок
  */
+@Slf4j
 @RestController
 @RequestMapping("/discount")
 @RequiredArgsConstructor
@@ -37,6 +39,11 @@ public class DiscountController {
     public BigDecimal calculateFixedDiscount(@RequestParam("price") BigDecimal price,
                                              @RequestParam("product_category") long productCategoryId,
                                              @RequestParam("client_category") long clientCategoryId) {
+        log.info("GET /discount/fixed: price = {}, productCategoryId = {}, clientCategoryId = {}",
+                price,
+                productCategoryId,
+                clientCategoryId
+        );
         return fixedDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
@@ -52,6 +59,11 @@ public class DiscountController {
     public BigDecimal calculateVariableDiscount(@RequestParam("price") BigDecimal price,
                                                 @RequestParam("product_category") long productCategoryId,
                                                 @RequestParam("client_category") long clientCategoryId) {
+        log.info("GET /discount/variable: price = {}, productCategoryId = {}, clientCategoryId = {}",
+                price,
+                productCategoryId,
+                clientCategoryId
+        );
         return variableDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
