@@ -1,5 +1,12 @@
 package ru.example.discount.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +29,7 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/discount")
 @RequiredArgsConstructor
+@Tag(name = "Discount controller API", description = "Контроллер управления типом скидки")
 public class DiscountController {
 
     private final DiscountService fixedDiscountService;
@@ -35,10 +43,28 @@ public class DiscountController {
      * @param clientCategoryId  ID категории клиента
      * @return Стоимость с учетом скидок
      */
+    @Operation(summary = "Рассчитать фиксированную скидку", description = "Фиксированная скидка")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешный расчет для фиксированной скидки",
+                    content = @Content(schema = @Schema(implementation = BigDecimal.class, example = "450.50"))
+            ),
+            @ApiResponse(
+                    responseCode = "400", description = "Неверное значение цены: отрицательное или null"
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "Правила для вычисления новой цены по фиксированной скидке не найдены"
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Внутрення ошибка сервера"
+            )
+    })
     @GetMapping("/fixed")
-    public BigDecimal calculateFixedDiscount(@RequestParam("price") BigDecimal price,
-                                             @RequestParam("product_category") long productCategoryId,
-                                             @RequestParam("client_category") long clientCategoryId) {
+    public BigDecimal calculateFixedDiscount(
+            @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
+            @RequestParam("product_category") @Parameter(description = "Уникальный идентификатор продукта") long productCategoryId,
+            @RequestParam("client_category") @Parameter(description = "Уникальный идентификатор категории клиента") long clientCategoryId) {
         log.info("GET /discount/fixed: price = {}, productCategoryId = {}, clientCategoryId = {}",
                 price,
                 productCategoryId,
@@ -55,10 +81,28 @@ public class DiscountController {
      * @param clientCategoryId  ID категории клиента
      * @return Стоимость с учетом скидок
      */
+    @Operation(summary = "Рассчитать случайную скидку", description = "Случайная скидка")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешный расчет для случайной скидки",
+                    content = @Content(schema = @Schema(implementation = BigDecimal.class, example = "350.50"))
+            ),
+            @ApiResponse(
+                    responseCode = "400", description = "Неверное значение цены: отрицательное или null"
+            ),
+            @ApiResponse(
+                    responseCode = "404", description = "Правила для вычисления новой цены по случайной скидке не найдены"
+            ),
+            @ApiResponse(
+                    responseCode = "500", description = "Внутрення ошибка сервера"
+            )
+    })
     @GetMapping("/variable")
-    public BigDecimal calculateVariableDiscount(@RequestParam("price") BigDecimal price,
-                                                @RequestParam("product_category") long productCategoryId,
-                                                @RequestParam("client_category") long clientCategoryId) {
+    public BigDecimal calculateVariableDiscount(
+            @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
+            @RequestParam("product_category") @Parameter(description = "Уникальный идентификатор категории продукта") long productCategoryId,
+            @RequestParam("client_category") @Parameter(description = "Уникальный идентификатор категории клиента") long clientCategoryId) {
         log.info("GET /discount/variable: price = {}, productCategoryId = {}, clientCategoryId = {}",
                 price,
                 productCategoryId,
