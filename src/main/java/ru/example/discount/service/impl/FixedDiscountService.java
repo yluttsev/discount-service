@@ -1,6 +1,7 @@
 package ru.example.discount.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FixedDiscountService implements DiscountService {
@@ -25,6 +27,11 @@ public class FixedDiscountService implements DiscountService {
 
     @Override
     public BigDecimal calculateDiscount(BigDecimal price, long productCategoryId, long clientCategoryId) {
+        log.info("Вызван метод calculateDiscount. Расчет скидки для clientCategoryID={}, productCategoryID={}, price={}",
+                clientCategoryId,
+                productCategoryId,
+                price
+        );
         List<Discount> discounts = getDiscounts(productCategoryId, clientCategoryId);
         if (!discounts.isEmpty()) {
             return isDiscountAggregate ? calculateAggregatedDiscount(price, discounts) : calculateSingleDiscount(price, discounts.get(0));
@@ -33,6 +40,10 @@ public class FixedDiscountService implements DiscountService {
     }
 
     private List<Discount> getDiscounts(long productCategoryId, long clientCategoryId) {
+        log.info("Вызван метод getDiscounts. Получение скидок для clientCategoryID={}, productCategoryID={}",
+                clientCategoryId,
+                productCategoryId
+        );
         if (isDiscountAggregate) {
             return discountRepository.findByClientCategoryAndProductCategory(
                             productCategoryId,
@@ -55,6 +66,7 @@ public class FixedDiscountService implements DiscountService {
             BigDecimal multiplier = BigDecimal.ONE.subtract(BigDecimal.valueOf(discount.getMinValue() / 100.0));
             resultPrice = resultPrice.multiply(multiplier).setScale(2, RoundingMode.HALF_UP);
         }
+        log.debug("Рассчитанная цена при условии суммирования скидок: {}", resultPrice);
         return resultPrice;
     }
 
