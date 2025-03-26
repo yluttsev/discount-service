@@ -37,15 +37,15 @@ public class FixedDiscountService implements DiscountService {
     private List<Discount> getDiscounts(long productCategoryId, long clientCategoryId) {
         if (isDiscountAggregate) {
             return discountRepository.findByClientCategoryAndProductCategory(
-                            productCategoryId,
                             clientCategoryId,
+                            productCategoryId,
                             DiscountType.FIXED,
                             Pageable.unpaged())
                     .getContent();
         }
         return discountRepository.findByClientCategoryAndProductCategory(
-                productCategoryId,
                 clientCategoryId,
+                productCategoryId,
                 DiscountType.FIXED,
                 PageRequest.of(0, 1)
         ).getContent();

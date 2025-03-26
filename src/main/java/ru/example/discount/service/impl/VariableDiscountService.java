@@ -38,15 +38,15 @@ public class VariableDiscountService implements DiscountService {
     private List<Discount> getDiscounts(long productCategoryId, long clientCategoryId) {
         if (isDiscountAggregate) {
             return discountRepository.findByClientCategoryAndProductCategory(
-                            productCategoryId,
                             clientCategoryId,
+                            productCategoryId,
                             DiscountType.VARIABLE,
                             Pageable.unpaged())
                     .getContent();
         }
         return discountRepository.findByClientCategoryAndProductCategory(
-                productCategoryId,
                 clientCategoryId,
+                productCategoryId,
                 DiscountType.VARIABLE,
                 PageRequest.of(0, 1)
         ).getContent();
