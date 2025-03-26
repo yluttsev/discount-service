@@ -15,6 +15,9 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
+/**
+ * Категория клиента
+ */
 @Entity
 @Table(name = "client_category")
 @AllArgsConstructor

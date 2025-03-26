@@ -15,6 +15,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+/**
+ * Реализация {@link DiscountService} для расчета фиксированной скидки
+ */
 @Service
 @RequiredArgsConstructor
 @Validated
@@ -34,6 +37,13 @@ public class FixedDiscountService implements DiscountService {
         return price;
     }
 
+    /**
+     * Получение списка скидок из репозитория
+     *
+     * @param productCategoryId ID категории продукта
+     * @param clientCategoryId  ID категории клиента
+     * @return Список скидок для данного продукта и клиента
+     */
     private List<Discount> getDiscounts(long productCategoryId, long clientCategoryId) {
         if (isDiscountAggregate) {
             return discountRepository.findByClientCategoryAndProductCategory(
@@ -51,6 +61,13 @@ public class FixedDiscountService implements DiscountService {
         ).getContent();
     }
 
+    /**
+     * Расчет стоимости с суммированием скидок
+     *
+     * @param price     стоимость продукта
+     * @param discounts список скидок
+     * @return Стоимость с учетом всех скидок
+     */
     private BigDecimal calculateAggregatedDiscount(BigDecimal price, List<Discount> discounts) {
         BigDecimal resultPrice = price;
         for (Discount discount : discounts) {
@@ -60,6 +77,13 @@ public class FixedDiscountService implements DiscountService {
         return resultPrice;
     }
 
+    /**
+     * Расчет стоимости без суммирования скидок
+     *
+     * @param price    стоимость продукта
+     * @param discount скидка для данного продукта
+     * @return Стоимость с учетом скидки
+     */
     private BigDecimal calculateSingleDiscount(BigDecimal price, Discount discount) {
         return price.subtract(price.multiply(BigDecimal.valueOf(discount.getMinValue() / 100.0)));
     }

@@ -33,3 +33,4 @@ test {
 }
 
 tasks.bootJar.archiveFileName = "discount-service.jar"
+tasks.javadoc.options.encoding = "UTF-8"

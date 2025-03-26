@@ -19,6 +19,9 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.example.discount.entity.enums.DiscountType;
 
+/**
+ * Скидка
+ */
 @Entity
 @Table(name = "discount")
 @Getter
@@ -43,9 +46,15 @@ public class Discount {
     @ToString.Exclude
     private ClientCategory clientCategory;
 
+    /**
+     * Минимальный процент скидки
+     */
     @Column(name = "min_value")
     private Short minValue;
 
+    /**
+     * Максимальный процент скидки
+     */
     @Column(name = "max_value")
     private Short maxValue;
 
