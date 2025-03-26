@@ -1,5 +1,8 @@
 package ru.example.discount.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -17,22 +20,27 @@ import java.math.BigDecimal;
 @RestController
 @RequestMapping("/discount")
 @RequiredArgsConstructor
+@Tag(name = "Discount controller API", description = "Контроллер управления типом скидки")
 public class DiscountController {
 
     private final DiscountService fixedDiscountService;
     private final DiscountService variableDiscountService;
 
+    @Operation(summary = "Рассчитать фиксированную скидку", description = "Фиксированная скидка")
     @GetMapping("/fixed")
-    public BigDecimal calculateFixedDiscount(@RequestParam("price") BigDecimal price,
-                                             @RequestParam("product_category") long productCategoryId,
-                                             @RequestParam("client_category") long clientCategoryId) {
+    public BigDecimal calculateFixedDiscount(
+            @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
+            @RequestParam("product_category") @Parameter(description = "Уникальный идентификатор продукта") long productCategoryId,
+            @RequestParam("client_category") @Parameter(description = "Уникальный идентификатор категории клиента") long clientCategoryId) {
         return fixedDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
+    @Operation(summary = "Рассчитать случайную скидку", description = "Случайная скидка")
     @GetMapping("/variable")
-    public BigDecimal calculateVariableDiscount(@RequestParam("price") BigDecimal price,
-                                                @RequestParam("product_category") long productCategoryId,
-                                                @RequestParam("client_category") long clientCategoryId) {
+    public BigDecimal calculateVariableDiscount(
+            @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
+            @RequestParam("product_category") @Parameter(description = "Уникальный идентификатор категории продукта") long productCategoryId,
+            @RequestParam("client_category") @Parameter(description = "Уникальный идентификатор категории клиента") long clientCategoryId) {
         return variableDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
