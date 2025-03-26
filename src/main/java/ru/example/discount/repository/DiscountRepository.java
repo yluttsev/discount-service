@@ -2,6 +2,7 @@ package ru.example.discount.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,7 @@ public interface DiscountRepository extends ListCrudRepository<Discount, Long> {
             "   when d.productCategory is null and d.clientCategory is not null then 3 " +
             "   else 4 " +
             "end")
+    @EntityGraph(attributePaths = {"productCategory", "clientCategory"})
     Page<Discount> findByClientCategoryAndProductCategory(@Param("client_category_id") Long clientCategoryId,
                                                           @Param("product_category_id") Long productCategoryId,
                                                           @Param("discount_type") DiscountType discountType,
