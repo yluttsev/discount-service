@@ -5,7 +5,6 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +20,20 @@ import java.math.BigDecimal;
 public class DiscountController {
 
     private final DiscountService fixedDiscountService;
+    private final DiscountService variableDiscountService;
 
     @GetMapping("/fixed")
-    public ResponseEntity<BigDecimal> calculateFixedDiscount(@RequestParam("price") BigDecimal price,
-                                                             @RequestParam("product_category") long productCategoryId,
-                                                             @RequestParam("client_category") long clientCategoryId) {
-        return ResponseEntity.ok().body(fixedDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId));
+    public BigDecimal calculateFixedDiscount(@RequestParam("price") BigDecimal price,
+                                             @RequestParam("product_category") long productCategoryId,
+                                             @RequestParam("client_category") long clientCategoryId) {
+        return fixedDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
+    }
+
+    @GetMapping("/variable")
+    public BigDecimal calculateVariableDiscount(@RequestParam("price") BigDecimal price,
+                                                @RequestParam("product_category") long productCategoryId,
+                                                @RequestParam("client_category") long clientCategoryId) {
+        return variableDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
