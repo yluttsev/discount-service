@@ -26,10 +26,6 @@ public class VariableDiscountService implements DiscountService {
 
     @Override
     public BigDecimal calculateDiscount(BigDecimal price, long productCategoryId, long clientCategoryId) {
-        if (price == null || price.compareTo(BigDecimal.ZERO) < 0) {
-            // TODO Logging
-            throw new IllegalArgumentException("price can't be null or negative");
-        }
         List<Discount> discounts = getDiscounts(productCategoryId, clientCategoryId);
         if (!discounts.isEmpty()) {
             return isDiscountAggregate ? calculateAggregatedDiscount(price, discounts) : calculateSingleDiscount(price, discounts.get(0));
@@ -68,10 +64,10 @@ public class VariableDiscountService implements DiscountService {
                 .setScale(2, RoundingMode.HALF_UP);
     }
 
-    private int randomDiscountValue(short min_value, short max_value) {
+    private int randomDiscountValue(short minValue, short maxValue) {
         return ThreadLocalRandom.current().nextInt(
-                min_value,
-                max_value
+                minValue,
+                maxValue
         );
     }
 
