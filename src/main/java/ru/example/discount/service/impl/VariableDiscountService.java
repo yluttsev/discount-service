@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import ru.example.discount.entity.Discount;
 import ru.example.discount.entity.enums.DiscountType;
 import ru.example.discount.repository.DiscountRepository;
@@ -17,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class VariableDiscountService implements DiscountService {
 
     private final DiscountRepository discountRepository;
