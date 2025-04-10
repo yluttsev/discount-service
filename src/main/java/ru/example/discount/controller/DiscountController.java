@@ -1,5 +1,6 @@
 package ru.example.discount.controller;
 
+import feign.FeignException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +19,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.example.discount.service.DiscountService;
+import ru.example.discount.service.impl.FixedDiscountService;
+import ru.example.discount.service.impl.LoyaltyDiscountService;
+import ru.example.discount.service.impl.VariableDiscountService;
 
 import java.math.BigDecimal;
 
@@ -32,8 +35,9 @@ import java.math.BigDecimal;
 @Tag(name = "Discount controller API", description = "Контроллер управления типом скидки")
 public class DiscountController {
 
-    private final DiscountService fixedDiscountService;
-    private final DiscountService variableDiscountService;
+    private final FixedDiscountService fixedDiscountService;
+    private final VariableDiscountService variableDiscountService;
+    private final LoyaltyDiscountService loyaltyDiscountService;
 
     /**
      * Расчет фиксированной скидки
@@ -111,6 +115,12 @@ public class DiscountController {
         return variableDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
+    @GetMapping("/loyalty")
+    public BigDecimal calculateLoyaltyDiscount(@RequestParam("user_id") Long userId,
+                                               @RequestParam("price") BigDecimal price) {
+        return loyaltyDiscountService.calculateDiscount(price, userId);
+    }
+
     /**
      * Обработчик исключения {@link ConstraintViolationException}
      *
@@ -126,6 +136,14 @@ public class DiscountController {
                         .findFirst()
                         .map(ConstraintViolation::getMessage)
                         .orElse("Ошибка валидации")
+        );
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ProblemDetail feignClientException(FeignException e) {
+        return ProblemDetail.forStatusAndDetail(
+                HttpStatus.valueOf(e.status()),
+                e.getMessage()
         );
     }
 }
