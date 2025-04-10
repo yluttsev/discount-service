@@ -47,6 +47,7 @@ public class DiscountController {
      * @param clientCategoryId  ID категории клиента
      * @return Стоимость с учетом скидок
      */
+    @GetMapping("/fixed")
     @Operation(summary = "Рассчитать фиксированную скидку", description = "Фиксированная скидка")
     @ApiResponses(value = {
             @ApiResponse(
@@ -64,7 +65,6 @@ public class DiscountController {
                     responseCode = "500", description = "Внутрення ошибка сервера"
             )
     })
-    @GetMapping("/fixed")
     public BigDecimal calculateFixedDiscount(
             @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
             @RequestParam("product_category") @Parameter(description = "Уникальный идентификатор продукта") long productCategoryId,
@@ -85,6 +85,7 @@ public class DiscountController {
      * @param clientCategoryId  ID категории клиента
      * @return Стоимость с учетом скидок
      */
+    @GetMapping("/variable")
     @Operation(summary = "Рассчитать случайную скидку", description = "Случайная скидка")
     @ApiResponses(value = {
             @ApiResponse(
@@ -102,7 +103,6 @@ public class DiscountController {
                     responseCode = "500", description = "Внутрення ошибка сервера"
             )
     })
-    @GetMapping("/variable")
     public BigDecimal calculateVariableDiscount(
             @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price,
             @RequestParam("product_category") @Parameter(description = "Уникальный идентификатор категории продукта") long productCategoryId,
@@ -115,9 +115,36 @@ public class DiscountController {
         return variableDiscountService.calculateDiscount(price, productCategoryId, clientCategoryId);
     }
 
+    /**
+     * Расчет скидки с учетом лояльности
+     *
+     * @param userId            ID пользователя
+     * @param price             стоимость продукта
+     * @return Стоимость с учетом лояльности пользователя
+     */
     @GetMapping("/loyalty")
-    public BigDecimal calculateLoyaltyDiscount(@RequestParam("user_id") Long userId,
-                                               @RequestParam("price") BigDecimal price) {
+    @Operation(
+            summary = "Рассчитать скидку по лояльности",
+            description = "Возвращает размер скидки для пользователя на основе его статуса лояльности"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Успешный расчет скидки с учетом лояльности"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Неверные параметры запроса"
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Пользователь не найден"
+            )
+    })
+    public BigDecimal calculateLoyaltyDiscount(
+            @RequestParam("user_id") @Parameter(description = "ID пользователя") Long userId,
+            @RequestParam("price") @Parameter(description = "Сумма, для которой предоставляется скидка") BigDecimal price
+    ) {
         return loyaltyDiscountService.calculateDiscount(price, userId);
     }
 
