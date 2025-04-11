@@ -1,5 +1,5 @@
 services:
-  database:
+  discount-service-mysql:
     container_name: discount-service_database
     image: mysql:latest
     ports:
@@ -16,15 +16,23 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-  app:
+    networks:
+      - all-services
+  discount-service-app:
     container_name: discount-service_app
     image: discount-service:latest
     ports:
       - "8080:8080"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://database:3306/discount_service
+      SPRING_DATASOURCE_URL: jdbc:mysql://discount-service-mysql:3306/discount_service
       SPRING_DATASOURCE_USERNAME: mysql
       SPRING_DATASOURCE_PASSWORD: mysql
+      USER_SERVICE_URL: http://user-service-app:8082
     depends_on:
-      database:
+      discount-service-mysql:
         condition: service_healthy
+    networks:
+      - all-services
+networks:
+  all-services:
+    external: true
